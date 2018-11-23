@@ -1,0 +1,217 @@
+<html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+    </head>
+    <script>
+        // Given a list of error codes a -> b -> c -> error for specific user Ids, find all errors that the user has received (so a,b,c prompted an error, display the user Ids).
+        const logs = [ // chronological order
+            { error: 'Bad password', userId: 1 },
+            { error: 'Bad username', userId: 3 },
+            { error: 'SQL injection attempt', userId: 4 },
+            { error: 'Hack attempt', userId: 1 },
+            { error: 'Bad username', userId: 1 },
+        ];
+
+        errorLogsById = [];
+        for(i=0;i<logs.length;i++) {
+            //console.log(logs[i]);
+            //arrtmp = errorLogsById[logs[i].userId];
+            if(errorLogsById[logs[i].userId] === undefined || errorLogsById[logs[i].userId].length < 1) {
+                errorLogsById[logs[i].userId] = [logs[i].error];
+            } else {
+                //console.log( errorLogsById[logs[i].userId]);
+                errorLogsById[logs[i].userId].push(logs[i].error);
+            }
+        }
+
+        console.log(errorLogsById);
+        console.log('end0');
+        console.log(errorLogsById[1]);
+        console.log('end');
+
+        const errorLog = (arr, userid) => arr.filter(user => user.userId == userid);
+
+        console.log(errorLog(logs, 1));
+
+       //#1 can you capitalize the first letter of any string passed  in example: "abc" -> "Abc"
+
+        /* capitalize first letter of string */
+        const capitalize = (s) => {
+            //console.log(s);
+            //console.log(s.charAt(0).toUpperCase());
+            //console.log(s.slice(1));
+            return s.charAt(0).toUpperCase() + s.slice(1);
+        }
+        console.log(capitalize('abc'));
+
+       //#2 can you traverse an object, based on a path set by an array of strings and give its output value // example: // input1 = // { first: { second: { third: 'finish'} } // all: { good: { boys: { deserve: 'fudge' } } } // second: { third: 'wrong'} // }; // input2 = [ 'first', 'second', 'third' ]; // const someFunc = (input1,input2) => { // //logic // } -> 'finish'
+
+        input1 = { 
+            first: {
+                second: { 
+                     third: 'finish'
+                } 
+            }, all: {
+                    good: { 
+                        boys: { 
+                            deserve: 'fudge' 
+                        } 
+                    } 
+            }, second: {
+                    third: 'wrong'
+            }
+        };
+        input2 = [ 'first', 'second', 'third' ]; 
+        //input2 = ['first', 'second', 'third'];
+        //input2 = ['patty', 'cake', 'make', 'a'];
+        // const someFunc = (input1,input2) => { // //logic // } -> 'finish'
+
+        function traverseObj(obj, arr) {
+            finalout = ''; // final output
+            count = 0;  // count how deep into the object we are
+            arrcnt = arr.length-1; 
+            function recursiveTraverse(obj2, arr2) {
+                for (var key in obj2) { // first loop over passed object
+                    if(key === arr2[count]) { // check if object key is a match to the path passed
+                        if(count === arrcnt) { // check if we've looped enough times
+                            finalout = obj2[key]; // set final output variable 
+                        }
+                        count++;  // increment the counter
+
+                        // check if what we currently on is an object itself
+                        if(typeof obj2[key] === 'object' && obj2[key] !== null) { 
+                            recursiveTraverse(obj2[key], arr2); // its an object, traverse a layer deeper
+                        }
+                    }
+                }
+            }
+
+            recursiveTraverse(obj, arr);
+
+            return finalout;
+        }
+
+        console.log(traverseObj(input1, input2));
+
+        //#3 Can you flatten an array // example : [1 ,2, 3, {}, [4, [5,6]], [ function () {}, "magic", true, ["no",false,[[[[5]]]] ] ], [1,2,[3,4,[6,[7,[8]]]]], [[[[[[0]]]]] ]
+
+       // flatten array
+        artoflat = [
+            1 ,2, 3, {}, [4, [5,6]], [ function () {}, "magic", true, ["no",false,[[[[5]]]] ] ], [1,2,[3,4,[6,[7,[8]]]]], [[[[[[0]]]]]] 
+        ];
+
+        console.log(artoflat);
+        
+        const flatten = (array, result = []) => {
+
+            // iterate over array
+            for(var i=0; i<array.length; i++) {
+                // check if current item is an array
+                if(Array.isArray(array[i])) {
+                    // recurse by calling function again
+                    flatten(array[i], result);
+                } else {
+                    // otherwise item is not array, save to final result array
+                    result.push(array[i]);
+                }
+            }
+
+            return result;
+        }
+        console.log(flatten(artoflat));
+
+        //#4 Write a function that will print the numbers 0 through 5, printing each number one second apart
+        // extra credit: accept an array range and second delay as params to the function
+
+       function outputNumberRangeWithDelay(range, sec) {
+            delay_time_in_seconds = sec * 1000;
+            start_range = range[0];
+            end_range = range[1];
+            count = 0;
+            for (var i=start_range; i<=end_range; i++) {
+                timeout(i, count, delay_time_in_seconds); 
+                count++;
+            }
+            function timeout(i, count, delay_time_in_seconds){
+                setTimeout(() => console.log(i), count*delay_time_in_seconds); // since these are called immediately
+                                                          // make sure you increment all of them on start
+            }
+        }
+
+        outputNumberRangeWithDelay([0,5],1);
+
+
+        //#5 find the mean, median, mode, range of an array
+
+        // find mean of numbers in array
+        var meanFinder = (arr) => {
+            var total = 0;
+            arr.forEach(function(element) {
+                total += +element;
+            });
+            return total/arr.length;
+        }
+
+        // find mode of numbers in array
+        var medianFinder = (arr) => {
+            arr.sort(function(a,b){return a-b});
+            //console.log(arr.length);
+            if(arr.length % 2 == 0){
+                // number is even
+                middle_number_a = (arr.length) / 2;
+                middle_number_b = middle_number_a + 1;
+                middle_number_a--;
+                middle_number_b--;
+                return (arr[middle_number_a] + arr[middle_number_b]) / 2;
+            } else {
+                // number is odd
+                middle_number = (arr.length + 1) / 2; // get middle number
+                return arr[middle_number-1];
+            }
+        }
+
+        // find mode of numbers in array
+        var modeFinder = (arr) => {
+            arr.sort(function(a,b){return a-b});
+            var previous_element = 0;
+            var cur_elem_count = 1;
+            var prev_highest_count = 0;
+            var highest_element = 0;
+
+            // do this in one loop instead of doing two loops
+            // so keep track of highest set of numbers as we go
+            arr.forEach(function(element) {
+                if(element === previous_element) {
+                    cur_elem_count++;
+                    if(cur_elem_count > prev_highest_count) {
+                        highest_element = element;
+                        prev_highest_count = cur_elem_count;
+                    }
+                } else {
+                    previous_element = element;
+                    cur_elem_count = 1;
+                }
+            });
+            if(highest_element === 0) {
+                return 'No mode';
+            } else {
+                return highest_element;
+            }
+        }
+
+        // find range of numbers in array
+        var rangeFinder = (arr) => {
+            arr.sort(function(a,b){return a-b});
+            return [arr[0], arr[arr.length-1]];
+        }
+
+        console.log(meanFinder([1,2,3,4,5,6,7,8,9,10]));
+
+        console.log(medianFinder([1,2,3,4,5,6,7,8,9,10,11,12,13]))
+
+        console.log(modeFinder([1,1,9,9,9,2,3,4,5]));
+
+        console.log(rangeFinder([1,2,3,4,5]));
+
+    </script>
+</html>
