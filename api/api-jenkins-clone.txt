@@ -1,0 +1,18 @@
+api for jenkins clone:
+
+user login:
+	POST:
+		site.com/auth/id
+			-params: username:password
+retrieve job:
+	GET:
+		site.com/job/test/config.xml
+			-params: username:API_TOKEN
+create new job:
+	POST:
+		site.com/createItem/jobName
+			-params: username:API_TOKEN @mylocalconfig.xml
+trigger job:
+	POST:
+		site.com/job/test/buildWithParameters
+			-params: username:API_TOKEN parameter=VALUE
