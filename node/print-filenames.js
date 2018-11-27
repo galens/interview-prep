@@ -9,7 +9,7 @@ fs.readdir(dir_name, function callback(err, list) {
 	} else {
 		
 		for(i=0;i<list.length;i++) {
-				output_if_file(dir_name+list[i], list[i]);
+			output_if_file(dir_name+list[i], list[i]);
 		}
 	}
 });
