@@ -1,0 +1,33 @@
+api for venmo clone:
+
+user login:
+	POST:
+		site.com/auth/id
+			-params: username:password
+retrieve public user info:
+	GET:
+		site.com/user/id
+retrieve private user info:
+	GET:
+		site.com/user_private/id
+			-params: username:API_TOKEN
+send money:
+	POST:
+		site.com/send/id
+			-params: username:API_TOKEN
+add/edit bank account of user id:
+	PUT:
+		site.com/bank/id
+			-params: username:API_TOKEN, account, routing_num
+remove bank account of user id:
+	DELETE:
+		site.com/bank/id
+			-params: username:API_TOKEN
+withdraw money from bank of user id to local account:
+	POST:
+		site.com/withdraw/id
+			-params: username:API_TOKEN, amount
+request money:
+	POST:
+		site.com/request/id
+			-params: username:API_TOKEN, amount
