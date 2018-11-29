@@ -29,18 +29,25 @@
         console.log(errorLogsById[1]);
         console.log('end');
 
-        const errorLog = (arr, userid) => arr.filter(user => user.userId == userid);
+        const filterLogsById = (logs, id) => {
+            return logs.filter(log => log.userId == id);
+        }
 
-        console.log(errorLog(logs, 1));
+        console.log(filterLogsById(logs, 1));
 
        //#1 can you capitalize the first letter of any string passed  in example: "abc" -> "Abc"
 
         // capitalize first letter of string
+        /*
         const capitalize = (s) => {
             //console.log(s);
             //console.log(s.charAt(0).toUpperCase());
             //console.log(s.slice(1));
             return s.charAt(0).toUpperCase() + s.slice(1);
+        }
+        */
+        const capitalize = (str) => {
+            return str[0].toUpperCase() + str.slice(1);
         }
         console.log(capitalize('abc'));
 
@@ -66,29 +73,28 @@
         //input2 = ['patty', 'cake', 'make', 'a'];
         // const someFunc = (input1,input2) => { // //logic // } -> 'finish'
 
-        function traverseObj(obj, arr) {
-            finalout = ''; // final output
-            count = 0;  // count how deep into the object we are
-            arrcnt = arr.length-1; 
-            function recursiveTraverse(obj2, arr2) {
-                for (var key in obj2) { // first loop over passed object
-                    if(key === arr2[count]) { // check if object key is a match to the path passed
-                        if(count === arrcnt) { // check if we've looped enough times
-                            finalout = obj2[key]; // set final output variable 
-                        }
-                        count++;  // increment the counter
-
-                        // check if what we currently on is an object itself
-                        if(typeof obj2[key] === 'object' && obj2[key] !== null) { 
-                            recursiveTraverse(obj2[key], arr2); // its an object, traverse a layer deeper
+        const traverseObjectByPath = (obj, arr) => {
+            final_output = '';
+            arr_length = arr.length - 1;
+            count = 0;
+            const recurseObj = (obj2) => {
+                for(param in obj2) {
+                    if(param == arr[count]) {
+                        if(typeof obj2[param] == 'object') {
+                            count++;
+                            recurseObj(obj2[param]);
+                        } else {
+                            if(count == arr_length) {
+                                //console.log(obj2[param]);
+                                final_output = obj2[param];
+                            }
                         }
                     }
                 }
             }
 
-            recursiveTraverse(obj, arr);
-
-            return finalout;
+            recurseObj(obj);
+            return final_output;
         }
 
         console.log(traverseObj(input1, input2));
@@ -102,21 +108,16 @@
 
         console.log(artoflat);
         
-        const flatten = (array, result = []) => {
-
-            // iterate over array
-            for(var i=0; i<array.length; i++) {
-                // check if current item is an array
-                if(Array.isArray(array[i])) {
-                    // recurse by calling function again
-                    flatten(array[i], result);
+        const flatten = (arr, output = []) => {
+            arr.forEach((elem) => {
+                if(Array.isArray(elem)) {
+                    flatten(elem, output);
                 } else {
-                    // otherwise item is not array, save to final result array
-                    result.push(array[i]);
+                    output.push(elem);
                 }
-            }
+            });
 
-            return result;
+            return output;
         }
         console.log(flatten(artoflat));
 
@@ -140,37 +141,45 @@
 
         outputNumberRangeWithDelay([0,5],1);
 
+        const outputWithDelay = () => {
+            const delay = (i) => {
+                setTimeout(() => console.log(i), i * 1000);
+            }
+
+            for(i=0;i<=5;i++) {
+                delay(i);
+            }
+        }
+
 
         //#5 find the mean, median, mode, range of an array
 
         // find mean of numbers in array
-        var meanFinder = (arr) => {
-            var total = 0;
-            arr.forEach(function(element) {
-                total += +element;
+        const meanFinder = (nums) => {
+            total = 0;
+            nums.forEach((num) => {
+                total += +num;
             });
-            return total/arr.length;
+
+            return total/nums.length;
         }
 
-        // find mode of numbers in array
-        var medianFinder = (arr) => {
-            arr.sort(function(a,b){return a-b});
-            //console.log(arr.length);
-            if(arr.length % 2 == 0){
-                // number is even
-                middle_number_a = (arr.length) / 2;
-                middle_number_b = middle_number_a + 1;
-                middle_number_a--;
-                middle_number_b--;
-                return (arr[middle_number_a] + arr[middle_number_b]) / 2;
+        const medianFinder = (nums) => {
+            num_length = nums.length;
+            ordered_nums = nums.sort((a, b) => a-b);
+            console.log(ordered_nums);
+            
+            if(num_length % 2 == 0) {
+                console.log('is even');
+                return (nums[(num_length / 2) - 1] + nums[(num_length / 2)]) / 2;
             } else {
-                // number is odd
-                middle_number = (arr.length + 1) / 2; // get middle number
-                return arr[middle_number-1];
+                return nums[((num_length + 1) / 2) - 1];
             }
+            console.log(num_length);
         }
 
         // find mode of numbers in array
+        /*
         var modeFinder = (arr) => {
             arr.sort(function(a,b){return a-b});
             var previous_element = 0;
@@ -196,6 +205,36 @@
                 return 'No mode';
             } else {
                 return highest_element;
+            }
+        }
+        */
+
+        const modeFinder = (nums) => {
+            nums_count = [];
+            highest_count = 1;
+            most_freq_num = 0;
+            ordered_nums = nums.sort((a, b) => a-b);
+            ordered_nums.forEach((num) => {
+                if(nums_count[num]) {
+                    // already exists, add to number
+                    nums_count[num] = nums_count[num] + 1;
+                } else {
+                    // new number, increment one
+                    nums_count[num] = 1;
+                }
+            });
+
+            for(key in nums_count) {
+                if(nums_count[key] > highest_count) {
+                    highest_count = nums_count[key];
+                    most_freq_num = key;
+                }
+            }
+
+            if(most_freq_num != 0) {
+                return most_freq_num;
+            } else {
+                return 'no mode';
             }
         }
 
